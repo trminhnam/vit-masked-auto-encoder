@@ -18,7 +18,7 @@ def assert_tensors_equal(t1, t2):
 
 config = {
     "img_size": 224,
-    "patch_size": 16,
+    "patch_size": 74,
     "in_channels": 3,
     "num_classes": 1000,
     "embedding_dim": 768,
@@ -33,5 +33,8 @@ config = {
 model = ViT(**config)
 model.eval()
 
+# inputs = torch.randn(1, 3, 224, 224)
+# outputs = model(inputs)
 inputs = torch.randn(1, 3, 224, 224)
-outputs = model(inputs)
+mask = torch.from_numpy(np.array([[1, 0, 1, 0, 1, 0, 0, 1, 0]]))
+outputs = model(inputs, q_mask=mask)

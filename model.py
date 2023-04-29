@@ -80,10 +80,16 @@ class Attention(nn.Module):
             2, 0, 3, 1, 4
         )  # (3, batch_size, n_heads, n_patches, head_dim)
         q, k, v = qkv[0], qkv[1], qkv[2]  # (batch_size, n_heads, n_patches, head_dim)
+        # print(f"q.shape: {q.shape}")
 
-        dp = (q @ k.transpose(-2, -1)) * self.scale
+        dp = (
+            q @ k.transpose(-2, -1)
+        ) * self.scale  # (batch_size, n_heads, n_patches, n_patches)
+        # print(f"dp.shape: {dp.shape}")
+
         if q_mask is not None:
             dp = dp.masked_fill(q_mask == 0, float("-inf"))
+
         attn = dp.softmax(dim=-1)
         attn = self.attn_dropout(attn)
 
@@ -175,6 +181,7 @@ class ViT(nn.Module):
         qkv_bias=True,
         attn_p=0.0,
         p=0.0,
+        fine_tune=False,
     ):
         super(ViT, self).__init__()
         self.img_size = img_size
@@ -221,8 +228,8 @@ class ViT(nn.Module):
 
         # add cls token and position embedding
         cls_tokens = self.cls_token.expand(batch_size, -1, -1)
-        print(f"cls_tokens.shape: {cls_tokens.shape}")
-        print(f"x.shape: {x.shape}")
+        # print(f"cls_tokens.shape: {cls_tokens.shape}")
+        # print(f"x.shape: {x.shape}")
         x = torch.cat((cls_tokens, x), dim=1)
         if q_mask is not None:
             q_mask = F.pad(q_mask, (1, 0), value=True)
