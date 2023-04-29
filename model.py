@@ -89,7 +89,6 @@ class Attention(nn.Module):
         dp = (
             q @ k.transpose(-2, -1)
         ) * self.scale  # (batch_size, n_heads, n_patches, n_patches)
-        # print(f"dp.shape: {dp.shape}")
 
         if q_mask is not None:
             dp = dp.masked_fill(q_mask == 0, float("-inf"))
@@ -371,7 +370,9 @@ class MaskedAutoencoderViT(nn.Module):
             }
 
         else:
-            raise ValueError("stage must be one of 'pretrain', 'finetune', 'combine'")
+            raise ValueError(
+                "stage must be one of 'pretrain', 'finetune', 'combine'",
+            )
 
     def classify(self, imgs):
         latent, _, _ = self.forward_encoder(imgs, mask_ratio=0.75, stage="finetune")
@@ -403,9 +404,14 @@ class MaskedAutoencoderViT(nn.Module):
         cls_tokens = cls_token.expand(x.shape[0], -1, -1)
         x = torch.cat((cls_tokens, x), dim=1)
 
+        if stage == "finetune":
+            q_mask = self.get_query_facial_mask(x)
+        else:
+            q_mask = None
+
         # apply Transformer blocks
         for blk in self.blocks:
-            x = blk(x)
+            x = blk(x, q_mask=q_mask)
         x = self.norm(x)
 
         return x, mask, ids_restore
@@ -550,3 +556,11 @@ class MaskedAutoencoderViT(nn.Module):
         x = torch.einsum("nhwpqc->nchpwq", x)
         imgs = x.reshape(shape=(x.shape[0], 3, h * p, h * p))
         return imgs
+
+    def get_query_facial_mask(self, x):
+        N, L, D = x.shape
+        single_mask = [1] + [1, 0, 1, 0, 1, 0, 0, 1, 0]  # cls + mask 9 patches
+
+        # masks is repeated for each sample
+        mask = torch.tensor(single_mask, device=x.device).repeat(N, 1, 1, 1)
+        return mask.to(x.device)

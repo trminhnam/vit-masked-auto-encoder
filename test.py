@@ -31,6 +31,8 @@ config = {
     "p": 0.0,
 }
 
+assert config["img_size"] // 3 == config["patch_size"]
+
 # model = ViT(**config)
 # model.eval()
 
