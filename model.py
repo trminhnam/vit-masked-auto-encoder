@@ -377,6 +377,8 @@ class MaskedAutoencoderViT(nn.Module):
         latent, _, _ = self.forward_encoder(imgs, mask_ratio=0.75, stage="finetune")
         cls_token = latent[:, 0, :]
         pred = self.cls_head(cls_token)
+        pred = F.softmax(pred, dim=-1)
+        pred = pred.argmax(dim=-1)
         return pred
 
     def predict(self, imgs):

@@ -83,11 +83,13 @@ print("#" * 50 + "\n")
 print("Testing fine-tuning backprop...")
 for _ in range(10):
     outputs = model(inputs, mask_ratio=0.5, stage="finetune")
-    loss = criterion(outputs["pred_cls"], targets)
+    cls_loss = criterion(outputs["pred_cls"], targets)
+    loss = cls_loss
+
     optimizer.zero_grad()
     loss.backward()
     optimizer.step()
-    print(f"Loss = {loss.item()}")
+    print(f"Cls loss = {cls_loss.item()}")
 print(f"Fine-tuning backprop test passed!")
 print("#" * 50 + "\n")
 
@@ -103,3 +105,6 @@ for _ in range(10):
     print(f"Cls loss = {cls_loss.item()}, Mask loss = {outputs['loss'].item()}")
 print(f"Combine backprop test passed!")
 print("#" * 50 + "\n")
+
+print(f"Pred: {model.predict(inputs)}")
+print(f"Tgts: {targets}")
