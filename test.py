@@ -75,7 +75,7 @@ for _ in range(10):
     optimizer.zero_grad()
     loss.backward()
     optimizer.step()
-    print(f"Loss = {loss.item()}")
+    print(f"Loss = {loss.item():.4f}")
 print(f"Pretrained backprop test passed!")
 print("#" * 50 + "\n")
 
@@ -89,7 +89,7 @@ for _ in range(10):
     optimizer.zero_grad()
     loss.backward()
     optimizer.step()
-    print(f"Cls loss = {cls_loss.item()}")
+    print(f"Cls loss = {cls_loss.item():.4f}")
 print(f"Fine-tuning backprop test passed!")
 print("#" * 50 + "\n")
 
@@ -102,7 +102,7 @@ for _ in range(10):
     optimizer.zero_grad()
     loss.backward()
     optimizer.step()
-    print(f"Cls loss = {cls_loss.item()}, Mask loss = {outputs['loss'].item()}")
+    print(f"Cls loss = {cls_loss.item():.4f}, Mask loss = {outputs['loss'].item():.4f}")
 print(f"Combine backprop test passed!")
 print("#" * 50 + "\n")
 
