@@ -1,0 +1,25 @@
+data:
+  batch_size: 64
+  data_dir: data/Data_ver1/content/OUT
+  name: Our
+  num_workers: 4
+device: cuda
+model:
+  attn_p: 0.0
+  depth: 12
+  embedding_dim: 512
+  img_size: 72
+  in_channels: 3
+  mlp_ratio: 4.0
+  n_heads: 4
+  num_classes: 2
+  p: 0.0
+  patch_size: 24
+  qkv_bias: true
+stage: finetune
+train:
+  epochs: 50
+  log_interval: 10
+  lr: 1.0e-05
+  save_dir: checkpoints/finetune
+  weight_decay: 1.0e-06

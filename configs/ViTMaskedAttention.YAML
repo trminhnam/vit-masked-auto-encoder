@@ -1,0 +1,29 @@
+data: 
+    name : 'FER'
+    data_dir: 'data/FER' 
+    batch_size: 8 
+    num_workers: 4 
+
+model:
+    img_size: 48
+    patch_size: 16
+    in_channels: 3
+    num_classes: 7
+    embedding_dim: 768
+    depth: 12
+    n_heads: 12
+    mlp_ratio: 4.0
+    qkv_bias: True
+    attn_p: 0.0
+    p: 0.0
+
+train: 
+    epochs: 5 
+    lr: 1e-4
+    weight_decay: 0.000 
+    log_interval: 10 
+    save_dir: 'checkpoints/pretrain' 
+
+stage : pretrain
+
+device: cuda
